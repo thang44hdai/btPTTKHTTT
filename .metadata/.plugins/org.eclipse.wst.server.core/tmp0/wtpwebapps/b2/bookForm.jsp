@@ -10,6 +10,8 @@
 
 	<h2><%=request.getAttribute("book") == null ? "Add New Book" : "Edit Book"%></h2>
 	<form action="BookServlet" method="post">
+		<input type="hidden" name="action"
+			value="<%=request.getAttribute("book") == null ? "insert" : "update"%>" />
 		<input type="hidden" name="id"
 			value="<%=request.getAttribute("book") == null ? "" : ((com.company.bean.Book) request.getAttribute("book")).getId()%>" />
 		<label>Title:</label> <input type="text" name="title"

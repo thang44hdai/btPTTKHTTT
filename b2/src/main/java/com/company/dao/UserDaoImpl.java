@@ -27,7 +27,6 @@ public class UserDaoImpl implements UserDao {
 			preparedStatement.setString(2, password);
 
 			ResultSet resultSet = preparedStatement.executeQuery();
-			System.out.println("aaaaaaaa");
 			return resultSet.next();
 
 		} catch (SQLException e) {

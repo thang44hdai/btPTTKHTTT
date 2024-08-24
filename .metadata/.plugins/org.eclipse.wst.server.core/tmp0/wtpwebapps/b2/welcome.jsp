@@ -1,16 +1,12 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Welcome</title>
-</head>
-<body>
-
 <h2>Welcome to the Book Management System</h2>
 <a href="BookServlet?action=new">Add New Book</a>
 <a href="LogoutServlet">Logout</a>
+
+<h3>Search Books</h3>
+<form action="BookServlet" method="get">
+    <input type="text" name="search" placeholder="Enter book title..." />
+    <input type="submit" value="Search" />
+</form>
 
 <h3>Book List</h3>
 <table border="1">
@@ -35,7 +31,7 @@
         <td><%= book.getPrice() %></td>
         <td>
             <a href="BookServlet?action=edit&id=<%= book.getId() %>">Edit</a>
-            <a href="BookServlet?action=delete&id=<%= book.getId() %>" onclick="return confirm('XÃ³a sÃ¡ch nÃ y nhÃ©?')">Delete</a>
+            <a href="BookServlet?action=delete&id=<%= book.getId() %>" onclick="return confirm('Xóa sách này nhé?')">Delete</a>
         </td>
     </tr>
     <% } } else { %>
@@ -44,6 +40,3 @@
     </tr>
     <% } %>
 </table>
-
-</body>
-</html>

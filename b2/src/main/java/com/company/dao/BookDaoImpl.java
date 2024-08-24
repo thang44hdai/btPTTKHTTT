@@ -118,4 +118,32 @@ public class BookDaoImpl implements BookDao {
 			return false;
 		}
 	}
+
+	@Override
+	public List<Book> searchBooksByTitle(String title) {
+		List<Book> books = new ArrayList<>();
+		String query = "SELECT * FROM books WHERE title LIKE ?";
+
+		try (Connection connection = DBUtil.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+			preparedStatement.setString(1, "%" + title + "%");
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				Book book = new Book();
+				book.setId(resultSet.getInt("id"));
+				book.setTitle(resultSet.getString("title"));
+				book.setAuthor(resultSet.getString("author"));
+				book.setPrice(resultSet.getDouble("price"));
+				books.add(book);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return books;
+	}
+
 }
