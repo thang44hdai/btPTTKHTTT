@@ -1,0 +1,109 @@
+package com.company.dao;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+import com.company.bean.Book;
+
+public class BookDaoImpl implements BookDao {
+	private DataSource dataSource;
+
+	public BookDaoImpl() {
+		try {
+			InitialContext ctx = new InitialContext();
+			dataSource = (DataSource) ctx.lookup("java:comp/env/jdbc/bookdb");
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void insertBook(Book book) {
+		String sql = "INSERT INTO books (title, author, price) VALUES (?, ?, ?)";
+		try (Connection connection = dataSource.getConnection();
+				PreparedStatement ps = connection.prepareStatement(sql)) {
+			ps.setString(1, book.getTitle());
+			ps.setString(2, book.getAuthor());
+			ps.setDouble(3, book.getPrice());
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public Book selectBook(int id) {
+		Book book = null;
+		String sql = "SELECT * FROM books WHERE id = ?";
+		try (Connection connection = dataSource.getConnection();
+				PreparedStatement ps = connection.prepareStatement(sql)) {
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				book = new Book();
+				book.setId(rs.getInt("id"));
+				book.setTitle(rs.getString("title"));
+				book.setAuthor(rs.getString("author"));
+				book.setPrice(rs.getDouble("price"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return book;
+	}
+
+	@Override
+	public List<Book> selectAllBooks() {
+		List<Book> books = new ArrayList<>();
+		String sql = "SELECT * FROM books";
+		try (Connection connection = dataSource.getConnection();
+				Statement statement = connection.createStatement();
+				ResultSet rs = statement.executeQuery(sql)) {
+			while (rs.next()) {
+				Book book = new Book();
+				book.setId(rs.getInt("id"));
+				book.setTitle(rs.getString("title"));
+				book.setAuthor(rs.getString("author"));
+				book.setPrice(rs.getDouble("price"));
+				books.add(book);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return books;
+	}
+
+	@Override
+	public boolean deleteBook(int id) {
+		boolean rowDeleted = false;
+		String sql = "DELETE FROM books WHERE id = ?";
+		try (Connection connection = dataSource.getConnection();
+				PreparedStatement ps = connection.prepareStatement(sql)) {
+			ps.setInt(1, id);
+			rowDeleted = ps.executeUpdate() > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return rowDeleted;
+	}
+
+	@Override
+	public boolean updateBook(Book book) {
+		boolean rowUpdated = false;
+		String sql = "UPDATE books SET title = ?, author = ?, price = ? WHERE id = ?";
+		try (Connection connection = dataSource.getConnection();
+				PreparedStatement ps = connection.prepareStatement(sql)) {
+			ps.setString(1, book.getTitle());
+			ps.setString(2, book.getAuthor());
+			ps.setDouble(3, book.getPrice());
+			ps.setInt(4, book.getId());
+			rowUpdated = ps.executeUpdate() > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return rowUpdated;
+	}
+}
