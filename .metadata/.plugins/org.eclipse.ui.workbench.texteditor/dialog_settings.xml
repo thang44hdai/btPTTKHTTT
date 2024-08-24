@@ -6,8 +6,10 @@
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
-		<item key="selection" value="insert"/>
+		<item key="selection" value="request"/>
 		<list key="findhistory">
+			<item value="request"/>
+			<item value="DBUtil"/>
 			<item value="insert"/>
 			<item value="doGet"/>
 			<item value="@Override"/>
